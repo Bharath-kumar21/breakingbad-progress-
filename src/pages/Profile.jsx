@@ -203,29 +203,89 @@ export default function Profile() {
                 <div ref={progressRef} style={{
                     background: '#040f09',
                     backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px)',
-                    padding: '24px',
-                    ...mono
+                    padding: '20px',
+                    ...mono,
+                    // Retro double-border effect
+                    border: '4px solid #1a5c2a',
+                    outline: '2px solid #0a2010',
+                    outlineOffset: '4px',
+                    boxShadow: '0 0 0 8px #040f09, 0 0 0 10px #1a5c2a, 0 0 20px rgba(107,229,133,0.2)',
                 }}>
-                    {/* Header */}
-                    <div style={{ borderBottom: '2px solid #1a5c2a', paddingBottom: 12, marginBottom: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                    {/* Retro corner marks */}
+                    {[
+                        { top: 6, left: 6 }, { top: 6, right: 6 }, { bottom: 6, left: 6 }, { bottom: 6, right: 6 }
+                    ].map((pos, i) => (
+                        <div key={i} style={{
+                            position: 'absolute', width: 12, height: 12,
+                            borderTop: (pos.top !== undefined) ? '2px solid #6be585' : 'none',
+                            borderBottom: (pos.bottom !== undefined) ? '2px solid #6be585' : 'none',
+                            borderLeft: (pos.left !== undefined) ? '2px solid #6be585' : 'none',
+                            borderRight: (pos.right !== undefined) ? '2px solid #6be585' : 'none',
+                            ...pos
+                        }} />
+                    ))}
+
+                    {/* Header row: Logo + Timestamp */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
+                        {/* Logo */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                            <div style={{ display: 'flex', gap: 3 }}>
+                                <span style={{
+                                    background: 'linear-gradient(180deg,#a8ff78,#1e7a2f)',
+                                    color: '#000', padding: '2px 5px',
+                                    fontSize: '0.7rem', fontWeight: 900,
+                                    border: '1px solid #155726',
+                                    boxShadow: '1px 1px 0 #0a3a12'
+                                }}>Br</span>
+                                <span style={{
+                                    background: 'linear-gradient(180deg,#a8ff78,#1e7a2f)',
+                                    color: '#000', padding: '2px 5px',
+                                    fontSize: '0.7rem', fontWeight: 900,
+                                    border: '1px solid #155726',
+                                    boxShadow: '1px 1px 0 #0a3a12'
+                                }}>Ba</span>
+                            </div>
+                            <span style={{ color: '#6be585', fontSize: '0.5rem', letterSpacing: '0.15em', textShadow: '0 0 6px rgba(107,229,133,0.7)' }}>TRACKER</span>
+                        </div>
+
+                        {/* Timestamp */}
+                        <div style={{ textAlign: 'right' }}>
+                            <p style={{ color: '#6be585', fontSize: '0.65rem', fontWeight: 900, textShadow: '0 0 6px rgba(107,229,133,0.5)', letterSpacing: '0.05em' }}>
+                                {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                            </p>
+                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.1em' }}>
+                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Divider */}
+                    <div style={{ borderTop: '1px solid #0a3a12', borderBottom: '1px solid #0a3a12', padding: '2px 0', marginBottom: 12 }}>
+                        <p style={{ color: '#1a5c2a', fontSize: '0.5rem', letterSpacing: '0.2em', textAlign: 'center' }}>
+                            ─── OPERATIVE PROGRESS REPORT ───
+                        </p>
+                    </div>
+
+                    {/* Name + Percentage */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 14 }}>
                         <div>
-                            <p style={{ color: '#2e6e44', fontSize: '0.55rem', letterSpacing: '0.15em', marginBottom: 4 }}>BREAKING BAD TRACKER v1.0 © 2008</p>
+                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.15em', marginBottom: 4 }}>SUBJECT:</p>
                             <p style={{ color: '#6be585', fontSize: '1.4rem', fontWeight: 900, textShadow: '0 0 12px rgba(107,229,133,0.6)', letterSpacing: '0.05em' }}>
                                 {userData?.username?.toUpperCase() || 'OPERATIVE'}
                             </p>
                         </div>
                         <div style={{ textAlign: 'right' }}>
                             <p style={{ color: '#6be585', fontSize: '2rem', fontWeight: 900, textShadow: '0 0 15px rgba(107,229,133,0.8)', lineHeight: 1 }}>{pct}%</p>
-                            <p style={{ color: '#2e6e44', fontSize: '0.55rem', letterSpacing: '0.1em' }}>COMPLETE</p>
+                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.1em' }}>COMPLETE</p>
                         </div>
                     </div>
 
                     {/* Retro segment bar */}
-                    <p style={{ color: '#2e6e44', fontSize: '0.55rem', letterSpacing: '0.1em', marginBottom: 6 }}>C:\&gt; SERIES PROGRESS_</p>
-                    <div style={{ display: 'flex', gap: 3, marginBottom: 8 }}>
+                    <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.15em', marginBottom: 6 }}>C:\&gt; SERIES PROGRESS_</p>
+                    <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
                         {Array.from({ length: SEG }).map((_, i) => (
                             <div key={i} style={{
-                                flex: 1, height: 24,
+                                flex: 1, height: 20,
                                 background: i < filled
                                     ? 'linear-gradient(180deg,#a8ff78 0%,#3dba4e 50%,#1e7a2f 100%)'
                                     : '#071510',
@@ -236,14 +296,12 @@ export default function Profile() {
                     </div>
 
                     {/* Stats row */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1a5c2a', paddingTop: 10, marginTop: 4 }}>
-                        <span style={{ color: '#6be585', fontSize: '0.6rem' }}>EPISODES: <span style={{ color: '#a8ffc0', fontWeight: 900 }}>{watchedEpisodes.length}</span> / {TOTAL}</span>
-                        <span style={{ color: '#6be585', fontSize: '0.6rem' }}>FAV: <span style={{ color: '#ffd700', fontWeight: 900 }}>{favorites.length}</span></span>
-                        {dob && <span style={{ color: '#2e6e44', fontSize: '0.6rem' }}>DOB: {dob}</span>}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1a5c2a', paddingTop: 8 }}>
+                        <span style={{ color: '#6be585', fontSize: '0.55rem' }}>EPS: <span style={{ color: '#a8ffc0', fontWeight: 900 }}>{watchedEpisodes.length}</span>/{TOTAL}</span>
+                        <span style={{ color: '#6be585', fontSize: '0.55rem' }}>FAV: <span style={{ color: '#ffd700', fontWeight: 900 }}>{favorites.length}</span></span>
+                        {dob && <span style={{ color: '#2e6e44', fontSize: '0.55rem' }}>DOB: {dob}</span>}
+                        <span style={{ color: '#1a5c2a', fontSize: '0.55rem' }}>v1.0</span>
                     </div>
-                    <p style={{ color: '#0f3020', fontSize: '0.5rem', marginTop: 8, textAlign: 'right', letterSpacing: '0.1em' }}>
-                        HEISENBERG TRACKING SYSTEM — SECURE OUTPUT
-                    </p>
                 </div>
 
                 {/* Share button area */}
