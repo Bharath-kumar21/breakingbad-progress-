@@ -1,13 +1,24 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { Film, Home, Users, Star } from 'lucide-react';
+import { Film, Home, Users, Star, UserCircle2, LogIn } from 'lucide-react';
+import { useAppContext } from '../context/AppContext';
 import '../index.css';
 
 export default function Layout() {
-    const navItems = [
+    const { user } = useAppContext();
+
+    const baseNavItems = [
         { name: 'Dashboard', path: '/', icon: Home },
         { name: 'Episodes', path: '/episodes', icon: Film },
         { name: 'Favorites', path: '/favorites', icon: Star },
         { name: 'Characters', path: '/characters', icon: Users },
+    ];
+
+    // Dynamically append Profile or Login
+    const navItems = [
+        ...baseNavItems,
+        user
+            ? { name: 'Profile', path: '/profile', icon: UserCircle2 }
+            : { name: 'Log In', path: '/login', icon: LogIn }
     ];
 
     return (
@@ -33,13 +44,14 @@ export default function Layout() {
                                         `flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-bold transition-all duration-300 ${isActive
                                             ? 'bg-bb-green-20 text-white shadow-md border border-bb-green-30 scale-105'
                                             : 'text-white-med hover:text-white hover:bg-white-5 hover:scale-105'
-                                        }`
+                                        } ${(item.name === 'Profile' || item.name === 'Log In') && 'ml-4 border-l border-white-10 pl-4'}`
                                     }
                                 >
                                     {({ isActive }) => (
                                         <>
                                             <item.icon className={`w-4 h-4 transition-colors ${isActive ? 'text-bb-green' : ''}`} />
                                             {item.name}
+                                            {item.name === 'Profile' && <span className="absolute top-2 right-2 w-2 h-2 bg-bb-green rounded-full animate-pulse"></span>}
                                         </>
                                     )}
                                 </NavLink>
@@ -69,14 +81,15 @@ export default function Layout() {
                             key={item.name}
                             to={item.path}
                             className={({ isActive }) =>
-                                `flex flex-col items-center gap-1 p-2 rounded-lg min-w-64px transition-all duration-300 ${isActive
+                                `relative flex flex-col items-center gap-1 p-2 rounded-lg min-w-64px transition-all duration-300 ${isActive
                                     ? 'text-bb-green transform -translate-y-1'
                                     : 'text-white-dim hover:text-white-80 hover:-translate-y-0.5'
                                 }`
                             }
                         >
                             <item.icon className="w-5 h-5" />
-                            <span className="text-xs font-bold">{item.name}</span>
+                            <span className="text-xs font-bold whitespace-nowrap">{item.name}</span>
+                            {item.name === 'Profile' && <span className="absolute top-1 right-2 w-1.5 h-1.5 bg-bb-green rounded-full"></span>}
                         </NavLink>
                     ))}
                 </div>

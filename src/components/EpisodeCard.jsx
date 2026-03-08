@@ -20,29 +20,29 @@ export default function EpisodeCard({ episode }) {
                 </div>
                 <button
                     onClick={() => toggleFavorite(episode.id)}
-                    className="text-white-dim hover:text-bb-yellow transition-colors hover:scale-105"
+                    className="p-2 rounded-full text-white-dim hover:text-bb-yellow hover:bg-bb-yellow/10 transition-all hover:scale-110"
                     title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
                 >
-                    <Star className={`w-5 h-5 ${isFavorite ? 'text-bb-yellow fill-bb-yellow drop-shadow-md' : ''}`} />
+                    <Star className={`w-6 h-6 ${isFavorite ? 'text-bb-yellow fill-bb-yellow drop-shadow-md' : ''}`} />
                 </button>
             </div>
 
             <div className="mt-4 flex justify-between items-center">
                 <button
                     onClick={() => toggleWatched(episode.id)}
-                    className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors shadow-sm hover:shadow-lg ${isWatched
-                        ? 'bg-bb-green text-white hover:bg-bb-light-green'
+                    className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-bold tracking-wide transition-all duration-200 shadow-sm hover:shadow-lg hover:-translate-y-0.5 ${isWatched
+                        ? 'bg-bb-green text-white hover:bg-bb-light-green shadow-bb-green/20'
                         : 'bg-white-10 text-white-high hover:bg-white-20'
                         }`}
                 >
                     {isWatched ? (
                         <>
-                            <CheckCircle2 className="w-4 h-4 cursor-pointer" />
+                            <CheckCircle2 className="w-5 h-5" />
                             Watched
                         </>
                     ) : (
                         <>
-                            <Circle className="w-4 h-4 cursor-pointer" />
+                            <Circle className="w-5 h-5" />
                             Mark Watched
                         </>
                     )}

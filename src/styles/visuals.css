@@ -1,0 +1,241 @@
+/* ═══════════════════════════════
+   VISUALS — Colors, Borders, Backgrounds, Shadows
+   Purely decorative style utilities
+═══════════════════════════════ */
+
+/* Background colors */
+.bg-bb-dark {
+    background-color: var(--color-bb-dark);
+}
+
+.bg-bb-green {
+    background-color: var(--color-bb-green);
+}
+
+.bg-bb-green-10 {
+    background-color: rgba(16, 185, 129, 0.1);
+}
+
+.bg-bb-green-20 {
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+.bg-bb-light-green {
+    background-color: var(--color-bb-light-green);
+}
+
+.bg-bb-yellow-10 {
+    background-color: rgba(251, 191, 36, 0.1);
+}
+
+.bg-white {
+    background-color: var(--color-white);
+}
+
+.bg-white-5 {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.bg-white-10 {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.bg-white-20 {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.bg-glass {
+    background: var(--color-glass-bg);
+}
+
+/* Gradients */
+.bg-gradient-right {
+    background-image: linear-gradient(to right, var(--tw-gradient-stops));
+}
+
+.bg-gradient-top {
+    background-image: linear-gradient(to top, var(--tw-gradient-stops));
+}
+
+.from-bb-green-10 {
+    --tw-gradient-from: rgba(16, 185, 129, 0.15);
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgba(16, 185, 129, 0));
+}
+
+.to-transparent {
+    --tw-gradient-to: transparent;
+}
+
+/* Borders */
+.border {
+    border-width: 1px;
+    border-style: solid;
+    box-sizing: border-box;
+}
+
+.border-b {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.border-t {
+    border-top-width: 1px;
+    border-top-style: solid;
+}
+
+.border-l-2 {
+    border-left-width: 2px;
+    border-left-style: solid;
+}
+
+.border-l-4 {
+    border-left-width: 4px;
+    border-left-style: solid;
+}
+
+.border-white-5 {
+    border-color: rgba(255, 255, 255, 0.05);
+}
+
+.border-white-10 {
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.border-green-700 {
+    border-color: #047857;
+}
+
+.border-bb-green {
+    border-color: var(--color-bb-green);
+}
+
+.border-bb-green-20 {
+    border-color: rgba(16, 185, 129, 0.2);
+}
+
+.border-bb-green-30 {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+.border-bb-yellow {
+    border-color: var(--color-bb-yellow);
+}
+
+.border-transparent {
+    border-color: transparent;
+}
+
+/* Border Radius */
+.rounded {
+    border-radius: 0.25rem;
+}
+
+.rounded-lg {
+    border-radius: 0.5rem;
+}
+
+.rounded-xl {
+    border-radius: 0.75rem;
+}
+
+.rounded-2xl {
+    border-radius: 1rem;
+}
+
+.rounded-3xl {
+    border-radius: 1.5rem;
+}
+
+.rounded-full {
+    border-radius: 9999px;
+}
+
+/* Shadows */
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-xl {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+}
+
+.shadow-2xl {
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.shadow-inner {
+    box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* Opacity */
+.opacity-0 {
+    opacity: 0;
+}
+
+.opacity-5 {
+    opacity: 0.05;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.opacity-100 {
+    opacity: 1;
+}
+
+/* Object & filters */
+.object-cover {
+    object-fit: cover;
+}
+
+.object-center {
+    object-position: center;
+}
+
+.grayscale {
+    filter: grayscale(100%);
+    transition: filter 500ms ease;
+}
+
+.blur-md {
+    filter: blur(12px);
+}
+
+/* Ring (focus ring) */
+.ring-1 {
+    box-shadow: inset 0 0 0 1px var(--tw-ring-color);
+}
+
+.ring-white-20 {
+    --tw-ring-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Fill */
+.fill-bb-yellow {
+    fill: var(--color-bb-yellow);
+}
+
+/* Premium Glassmorphism component */
+.glass {
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    border: 1px solid var(--color-glass-border-dark);
+    border-top: 1px solid var(--color-glass-border-light);
+    border-left: 1px solid var(--color-glass-border-light);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+}
+
+/* Drop shadow text util */
+.drop-shadow-md {
+    filter: drop-shadow(0 4px 3px rgba(0, 0, 0, 0.4));
+}
+
+.drop-shadow-sm {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
+}

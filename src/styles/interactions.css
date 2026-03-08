@@ -1,0 +1,171 @@
+/* ═══════════════════════════════
+   INTERACTIONS — Hover, Transitions, Transforms
+   All interactive and motion-related utilities
+═══════════════════════════════ */
+
+/* Cursor */
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.pointer-events-none {
+    pointer-events: none;
+}
+
+/* Transitions */
+.transition-all {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    transition-duration: 250ms;
+}
+
+.transition-colors {
+    transition-property: color, background-color, border-color, box-shadow;
+    transition-timing-function: cubic-bezier(0.25, 1, 0.5, 1);
+    transition-duration: 250ms;
+}
+
+.duration-200 {
+    transition-duration: 200ms;
+}
+
+.duration-300 {
+    transition-duration: 300ms;
+}
+
+.duration-500 {
+    transition-duration: 500ms;
+}
+
+/* Transforms */
+.transform {
+    --transform-translate-x: 0;
+    --transform-translate-y: 0;
+}
+
+.-translate-y-1 {
+    transform: translateY(-0.25rem);
+}
+
+.-translate-y-0\.5 {
+    transform: translateY(-0.125rem);
+}
+
+.scale-105 {
+    transform: scale(1.05);
+}
+
+/* Hover: text */
+.hover\:text-white:hover {
+    color: var(--color-white);
+}
+
+.hover\:text-white-80:hover {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.hover\:text-bb-light-green:hover {
+    color: var(--color-bb-light-green);
+}
+
+.hover\:text-bb-yellow:hover {
+    color: var(--color-bb-yellow);
+}
+
+/* Hover: backgrounds */
+.hover\:bg-white-5:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.hover\:bg-white-10:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.hover\:bg-white-20:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.hover\:bg-bb-light-green:hover {
+    background-color: var(--color-bb-light-green);
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+.hover\:bg-bb-green:hover {
+    background-color: var(--color-bb-green);
+}
+
+/* Hover: borders */
+.hover\:border-white-20:hover {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.hover\:border-bb-green:hover {
+    border-color: var(--color-bb-green);
+}
+
+.hover\:border-bb-green-30:hover {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Hover: scale + shadow lift */
+.hover\:scale-105:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.5), 0 0 12px rgba(16, 185, 129, 0.1);
+}
+
+.hover\:scale-110:hover {
+    transform: scale(1.1);
+}
+
+.hover\:-translate-y-0\.5:hover {
+    transform: translateY(-0.125rem);
+}
+
+.hover\:-translate-y-1:hover {
+    transform: translateY(-0.25rem);
+}
+
+.hover\:shadow-lg:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.25);
+}
+
+.hover\:shadow-xl:hover {
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* Hover: opacity */
+.hover\:opacity-100:hover {
+    opacity: 1;
+}
+
+.hover\:grayscale-0:hover {
+    filter: grayscale(0%);
+}
+
+/* Group hover */
+.group:hover .group-hover\:scale-110 {
+    transform: scale(1.1);
+}
+
+.group:hover .group-hover\:opacity-100 {
+    opacity: 1;
+}
+
+.group:hover .group-hover\:grayscale-0 {
+    filter: grayscale(0%);
+}
+
+/* Focus */
+.focus-within\:text-bb-green:focus-within {
+    color: var(--color-bb-green);
+}
+
+/* Scrollbar hide */
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}

@@ -63,8 +63,8 @@ export default function Dashboard() {
                             <Trophy className="text-bb-green w-6 h-6" />
                             Up Next
                         </h3>
-                        <Link to="/episodes" className="text-sm text-bb-green hover:text-bb-light-green font-medium transition-colors">
-                            View all
+                        <Link to="/episodes" className="px-5 py-2 rounded-full bg-bb-green/10 border border-bb-green/30 text-sm text-bb-green hover:bg-bb-green hover:text-white font-bold tracking-wide transition-all duration-300 hover:-translate-y-0.5 shadow-sm hover:shadow-lg">
+                            View All →
                         </Link>
                     </div>
 

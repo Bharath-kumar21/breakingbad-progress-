@@ -1,0 +1,39 @@
+/* ═══════════════════════════════
+   COMPONENTS — Reusable UI Patterns
+   Named component-level styles
+═══════════════════════════════ */
+
+/* Search Input */
+.search-input {
+    width: 100%;
+    background-color: transparent;
+    border: none;
+    color: var(--color-white);
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    border-radius: 999px;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.05);
+    box-shadow: 0 0 0 2px var(--color-bb-green);
+}
+
+.search-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Nav Active State helpers */
+.bg-bb-green-20 {
+    background-color: rgba(16, 185, 129, 0.2);
+}
+
+.border-bb-green-30 {
+    border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* Whitespace control */
+.whitespace-nowrap {
+    white-space: nowrap;
+}

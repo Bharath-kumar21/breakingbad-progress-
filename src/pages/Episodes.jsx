@@ -46,8 +46,8 @@ export default function Episodes() {
                         <button
                             key={s}
                             onClick={() => setActiveSeason(s)}
-                            className={`px-8 py-2.5 rounded-full font-bold transition-all duration-300 shadow-sm whitespace-nowrap ${activeSeason === s
-                                ? 'bg-bb-green text-white shadow-lg shadow-bb-green/30 transform -translate-y-1'
+                            className={`px-10 py-3 rounded-full text-sm font-black tracking-wider transition-all duration-300 shadow-md whitespace-nowrap ${activeSeason === s
+                                ? 'bg-bb-green text-white shadow-lg shadow-bb-green/30 transform -translate-y-1 scale-105'
                                 : 'bg-white-5 text-white-med hover:bg-white-10 hover:text-white hover:-translate-y-0.5'
                                 }`}
                         >
@@ -69,9 +69,9 @@ export default function Episodes() {
                         <p className="text-lg">No episodes found matching "<span className="text-white font-bold">{searchQuery}</span>"</p>
                         <button
                             onClick={() => setSearchQuery('')}
-                            className="mt-4 text-bb-green hover:text-bb-light-green font-medium transition-colors"
+                            className="mt-6 px-8 py-3 rounded-full bg-bb-green/10 text-bb-green hover:bg-bb-green hover:text-white font-bold tracking-wide transition-all duration-300 hover:-translate-y-0.5 shadow-sm hover:shadow-lg text-sm"
                         >
-                            Clear search
+                            ✕ Clear Search
                         </button>
                     </div>
                 )}

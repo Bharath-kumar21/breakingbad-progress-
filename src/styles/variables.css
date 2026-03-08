@@ -1,0 +1,24 @@
+/* ═══════════════════════════════
+   VARIABLES — Design Tokens
+   CSS custom properties for the entire app
+═══════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;900&display=swap');
+
+:root {
+    /* Brand Colors */
+    --color-bb-green: #10b981;
+    --color-bb-light-green: #34d399;
+    --color-bb-dark: #0a0a0a;
+    --color-bb-yellow: #fbbf24;
+    --color-bb-text: #f8fafc;
+    --color-white: #ffffff;
+
+    /* Glass Effect */
+    --color-glass-bg: rgba(26, 26, 26, 0.4);
+    --color-glass-border-light: rgba(255, 255, 255, 0.15);
+    --color-glass-border-dark: rgba(255, 255, 255, 0.05);
+
+    /* Typography */
+    --font-sans: 'Outfit', sans-serif;
+}

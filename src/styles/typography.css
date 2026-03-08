@@ -1,0 +1,118 @@
+/* ═══════════════════════════════
+   TYPOGRAPHY — Text Utilities
+   Font sizes, weights, spacing
+═══════════════════════════════ */
+
+/* Colors */
+.text-bb-green {
+    color: var(--color-bb-green);
+}
+
+.text-bb-light-green {
+    color: var(--color-bb-light-green);
+}
+
+.text-bb-yellow {
+    color: var(--color-bb-yellow);
+}
+
+.text-white {
+    color: var(--color-white);
+}
+
+.text-white-dim {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.text-white-med {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.text-white-high {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Weights */
+.font-bold {
+    font-weight: 700;
+}
+
+.font-black {
+    font-weight: 900;
+}
+
+.font-medium {
+    font-weight: 500;
+}
+
+/* Sizes */
+.text-xs {
+    font-size: 0.75rem;
+    line-height: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+}
+
+.text-base {
+    font-size: 1rem;
+    line-height: 1.5rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.text-3xl {
+    font-size: 1.875rem;
+    line-height: 2.25rem;
+}
+
+.text-4xl {
+    font-size: 2.25rem;
+    line-height: 2.5rem;
+}
+
+/* Tracking */
+.tracking-tight {
+    letter-spacing: -0.025em;
+}
+
+.tracking-tighter {
+    letter-spacing: -0.05em;
+}
+
+.tracking-wider {
+    letter-spacing: 0.05em;
+}
+
+.tracking-widest {
+    letter-spacing: 0.1em;
+}
+
+/* Transform */
+.uppercase {
+    text-transform: uppercase;
+}
+
+/* Line clamp */
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

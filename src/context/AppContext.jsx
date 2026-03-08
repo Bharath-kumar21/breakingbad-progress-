@@ -1,8 +1,20 @@
 import { createContext, useContext, useState, useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase';
 
 const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
+    const [displayName, setDisplayName] = useState(() =>
+        localStorage.getItem('bb_displayName') || ''
+    );
+    const [dob, setDob] = useState(() =>
+        localStorage.getItem('bb_dob') || ''
+    );
+
     const [watchedEpisodes, setWatchedEpisodes] = useState(() => {
         const saved = localStorage.getItem('bb_watchedEpisodes');
         return saved ? JSON.parse(saved) : [];
@@ -14,32 +26,40 @@ export const AppProvider = ({ children }) => {
     });
 
     useEffect(() => {
-        localStorage.setItem('bb_watchedEpisodes', JSON.stringify(watchedEpisodes));
-    }, [watchedEpisodes]);
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+            setLoading(false);
+        });
+        return () => unsubscribe();
+    }, []);
 
-    useEffect(() => {
-        localStorage.setItem('bb_favorites', JSON.stringify(favorites));
-    }, [favorites]);
+    useEffect(() => { localStorage.setItem('bb_watchedEpisodes', JSON.stringify(watchedEpisodes)); }, [watchedEpisodes]);
+    useEffect(() => { localStorage.setItem('bb_favorites', JSON.stringify(favorites)); }, [favorites]);
+    useEffect(() => { localStorage.setItem('bb_displayName', displayName); }, [displayName]);
+    useEffect(() => { localStorage.setItem('bb_dob', dob); }, [dob]);
 
     const toggleWatched = (episodeId) => {
         setWatchedEpisodes(prev =>
-            prev.includes(episodeId)
-                ? prev.filter(id => id !== episodeId)
-                : [...prev, episodeId]
+            prev.includes(episodeId) ? prev.filter(id => id !== episodeId) : [...prev, episodeId]
         );
     };
 
     const toggleFavorite = (episodeId) => {
         setFavorites(prev =>
-            prev.includes(episodeId)
-                ? prev.filter(id => id !== episodeId)
-                : [...prev, episodeId]
+            prev.includes(episodeId) ? prev.filter(id => id !== episodeId) : [...prev, episodeId]
         );
     };
 
+    const userData = user
+        ? { username: displayName || user.email?.split('@')[0], dob }
+        : null;
+
     return (
-        <AppContext.Provider value={{ watchedEpisodes, toggleWatched, favorites, toggleFavorite }}>
-            {children}
+        <AppContext.Provider value={{
+            user, userData, displayName, setDisplayName, dob, setDob,
+            watchedEpisodes, toggleWatched, favorites, toggleFavorite, loading
+        }}>
+            {!loading && children}
         </AppContext.Provider>
     );
 };

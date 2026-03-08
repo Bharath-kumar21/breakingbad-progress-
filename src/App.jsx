@@ -5,6 +5,9 @@ import Dashboard from './pages/Dashboard';
 import Episodes from './pages/Episodes';
 import Favorites from './pages/Favorites';
 import Characters from './pages/Characters';
+import AuthPage from './pages/AuthPage';
+import Profile from './pages/Profile';
+import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
     return (
@@ -15,8 +18,23 @@ function App() {
                         <Route path="/" element={<Layout />}>
                             <Route index element={<Dashboard />} />
                             <Route path="episodes" element={<Episodes />} />
-                            <Route path="favorites" element={<Favorites />} />
                             <Route path="characters" element={<Characters />} />
+
+                            {/* Auth Routes */}
+                            <Route path="login" element={<AuthPage isLogin={true} />} />
+                            <Route path="signup" element={<AuthPage isLogin={false} />} />
+
+                            {/* Protected Routes */}
+                            <Route path="favorites" element={
+                                <ProtectedRoute>
+                                    <Favorites />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="profile" element={
+                                <ProtectedRoute>
+                                    <Profile />
+                                </ProtectedRoute>
+                            } />
                         </Route>
                     </Routes>
                 </div>
