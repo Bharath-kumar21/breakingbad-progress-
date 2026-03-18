@@ -5,24 +5,42 @@ import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { toJpeg } from 'html-to-image';
 import { episodes } from '../data/episodes';
-import { LogOut, User, Edit2, Share2, Check, X, Award, PlayCircle } from 'lucide-react';
+import { LogOut, User, Edit2, Share2, Check, X, Award, PlayCircle, Trash2 } from 'lucide-react';
 import ProgressBar from '../components/ProgressBar';
 
 const TOTAL = episodes.length;
 
 export default function Profile() {
-    const { user, userData, displayName, setDisplayName, dob, watchedEpisodes, favorites } = useAppContext();
+    const { user, userData, displayName, setDisplayName, dob, watchedEpisodes, favorites, deleteAccount } = useAppContext();
     const navigate = useNavigate();
     const progressRef = useRef(null);
     const [sharing, setSharing] = useState(false);
     const [editing, setEditing] = useState(false);
     const [nameInput, setNameInput] = useState(displayName || '');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [deleteConfirmInput, setDeleteConfirmInput] = useState('');
+    const [deleting, setDeleting] = useState(false);
+    const [deleteError, setDeleteError] = useState('');
 
     const pct = Math.round((watchedEpisodes.length / TOTAL) * 100) || 0;
 
     const handleLogout = async () => {
         await signOut(auth);
         navigate('/');
+    };
+
+    const handleDeleteAccount = async () => {
+        if (deleteConfirmInput !== 'DELETE') return;
+        setDeleting(true);
+        setDeleteError('');
+        try {
+            await deleteAccount();
+            navigate('/');
+        } catch (err) {
+            // Firebase requires recent login; guide user to sign out and back in
+            setDeleteError('For security, please sign out and sign back in, then try again.');
+            setDeleting(false);
+        }
     };
 
     const handleSaveName = () => {
@@ -252,7 +270,83 @@ export default function Profile() {
                 </p>
             </div>
             
+            {/* ── Danger Zone ── */}
+            <div className="glass rounded-3xl p-6 border border-red-500/20 shadow-2xl relative overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/5 to-transparent pointer-events-none"></div>
+                <div className="relative z-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                    <div>
+                        <h3 className="text-lg font-bold text-red-400 mb-1 flex items-center gap-2">
+                            <Trash2 size={18} />
+                            Danger Zone
+                        </h3>
+                        <p className="text-white-dim text-sm">Permanently delete your account and all associated data. This cannot be undone.</p>
+                    </div>
+                    <button
+                        onClick={() => { setShowDeleteModal(true); setDeleteConfirmInput(''); setDeleteError(''); }}
+                        className="shrink-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 text-red-400 font-bold hover:bg-red-500 hover:text-white transition-all duration-300 border border-red-500/30 shadow-sm"
+                    >
+                        <Trash2 size={16} />
+                        Delete Account
+                    </button>
+                </div>
+            </div>
+
             <div className="h-8"></div>
+
+            {/* ── Delete Confirmation Modal ── */}
+            {showDeleteModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ backgroundColor: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)' }}>
+                    <div className="glass rounded-3xl p-8 w-full max-w-md border border-red-500/30 shadow-2xl relative overflow-hidden fade-in">
+                        <div className="absolute inset-0 bg-gradient-to-br from-red-500/10 to-transparent pointer-events-none"></div>
+                        <div className="relative z-10">
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="w-12 h-12 rounded-full bg-red-500/20 border border-red-500/30 flex items-center justify-center">
+                                    <Trash2 className="text-red-400" size={22} />
+                                </div>
+                                <button onClick={() => setShowDeleteModal(false)} className="p-2 rounded-full text-white-dim hover:text-white hover:bg-white-10 transition-all">
+                                    <X size={20} />
+                                </button>
+                            </div>
+
+                            <h2 className="text-2xl font-black text-white mb-2">Delete Account?</h2>
+                            <p className="text-white-dim mb-6">This will permanently erase your account, all your progress, and tracked data. <span className="text-red-400 font-bold">There is no going back.</span></p>
+
+                            <p className="text-white-med text-sm font-bold mb-2">Type <span className="text-red-400 font-mono">DELETE</span> to confirm:</p>
+                            <input
+                                autoFocus
+                                value={deleteConfirmInput}
+                                onChange={e => setDeleteConfirmInput(e.target.value)}
+                                placeholder="DELETE"
+                                className="w-full bg-white-5 border border-red-500/30 rounded-xl px-4 py-3 text-white font-mono font-bold focus:outline-none focus:border-red-400 transition-all mb-4"
+                            />
+
+                            {deleteError && (
+                                <p className="text-red-400 text-sm font-medium mb-4">{deleteError}</p>
+                            )}
+
+                            <div className="flex gap-3">
+                                <button
+                                    onClick={() => setShowDeleteModal(false)}
+                                    className="flex-1 py-3 rounded-xl bg-white-5 text-white-med font-bold hover:bg-white-10 transition-all border border-white-10"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={handleDeleteAccount}
+                                    disabled={deleteConfirmInput !== 'DELETE' || deleting}
+                                    className="flex-1 py-3 rounded-xl bg-red-500/20 text-red-400 font-bold border border-red-500/30 hover:bg-red-500 hover:text-white transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                                >
+                                    {deleting ? (
+                                        <><span className="w-4 h-4 border-2 border-red-300/40 border-t-red-300 rounded-full animate-spin"></span> Deleting...</>
+                                    ) : (
+                                        <><Trash2 size={16} /> Confirm Delete</>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { onAuthStateChanged } from 'firebase/auth';
-import { doc, setDoc } from 'firebase/firestore';
+import { onAuthStateChanged, deleteUser } from 'firebase/auth';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 
 const AppContext = createContext();
@@ -83,11 +83,41 @@ export const AppProvider = ({ children }) => {
         ? { username: displayName || user.email?.split('@')[0], dob }
         : null;
 
+    const deleteAccount = async () => {
+        if (!user) return;
+        try {
+            // 1. Delete Firestore Tracking Document
+            const userRef = doc(db, 'users', user.uid);
+            await deleteDoc(userRef);
+
+            // 2. Delete Auth User
+            await deleteUser(user);
+
+            // 3. Clear Local Storage Data
+            localStorage.removeItem('bb_watchedEpisodes');
+            localStorage.removeItem('bb_favorites');
+            localStorage.removeItem('bb_displayName');
+            localStorage.removeItem('bb_dob');
+
+            // 4. Reset Local State
+            setWatchedEpisodes([]);
+            setFavorites([]);
+            setDisplayName('');
+            setDob('');
+            setUser(null);
+            
+            return true;
+        } catch (error) {
+            console.error("Error deleting account:", error);
+            throw error; // Let the UI handle the error (e.g., re-authentication required)
+        }
+    };
+
     return (
         <AppContext.Provider value={{
             user, userData, displayName, setDisplayName, dob, setDob,
             watchedEpisodes, toggleWatched, favorites, toggleFavorite, 
-            loading, isAdmin
+            loading, isAdmin, deleteAccount
         }}>
             {!loading && children}
         </AppContext.Provider>
