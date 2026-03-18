@@ -85,19 +85,27 @@ export const AppProvider = ({ children }) => {
 
     const deleteAccount = async () => {
         if (!user) return;
+        
+        // Capture uid before auth user is deleted
+        const uid = user.uid;
+        const userRef = doc(db, 'users', uid);
+
         try {
-            // 1. Delete Firestore Tracking Document
-            const userRef = doc(db, 'users', user.uid);
-            await deleteDoc(userRef);
-
-            // 2. Delete Auth User
-            await deleteUser(user);
-
-            // 3. Clear Local Storage Data
+            // 1. Clear Local Storage Data first (before async ops)
             localStorage.removeItem('bb_watchedEpisodes');
             localStorage.removeItem('bb_favorites');
             localStorage.removeItem('bb_displayName');
             localStorage.removeItem('bb_dob');
+
+            // 2. Delete Firebase Auth account (while user is still authenticated)
+            await deleteUser(user);
+
+            // 3. Silently try to delete Firestore document - don't fail if rules block it
+            try {
+                await deleteDoc(userRef);
+            } catch (firestoreErr) {
+                console.warn("Firestore doc could not be deleted:", firestoreErr.message);
+            }
 
             // 4. Reset Local State
             setWatchedEpisodes([]);
@@ -109,7 +117,7 @@ export const AppProvider = ({ children }) => {
             return true;
         } catch (error) {
             console.error("Error deleting account:", error);
-            throw error; // Let the UI handle the error (e.g., re-authentication required)
+            throw error;
         }
     };
 

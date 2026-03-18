@@ -37,8 +37,11 @@ export default function Profile() {
             await deleteAccount();
             navigate('/');
         } catch (err) {
-            // Firebase requires recent login; guide user to sign out and back in
-            setDeleteError('For security, please sign out and sign back in, then try again.');
+            if (err.code === 'auth/requires-recent-login') {
+                setDeleteError('Session expired. Please sign out and sign back in, then try deleting again.');
+            } else {
+                setDeleteError('Something went wrong. Please try again.');
+            }
             setDeleting(false);
         }
     };
