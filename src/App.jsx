@@ -6,6 +6,7 @@ import Episodes from './pages/Episodes';
 import Favorites from './pages/Favorites';
 import Characters from './pages/Characters';
 import Profile from './pages/Profile';
+import AuthPage from './pages/AuthPage';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import AdminRoute from './components/AdminRoute';
