@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Users, Activity, PlayCircle, Star, Search, ShieldAlert, Download, MonitorPlay } from 'lucide-react';
 
@@ -10,14 +10,15 @@ export default function AdminDashboard() {
 
     useEffect(() => {
         const usersRef = collection(db, 'users');
-        const q = query(usersRef, orderBy('lastActive', 'desc'));
+        // Simple collection query without orderBy to avoid composite index requirements
+        const q = query(usersRef);
 
         // Real-time listener — auto-updates whenever user data changes
         const unsubscribe = onSnapshot(q, (snapshot) => {
-            const usersData = snapshot.docs.map(doc => ({
-                id: doc.id,
-                ...doc.data()
-            }));
+            const usersData = snapshot.docs
+                .map(doc => ({ id: doc.id, ...doc.data() }))
+                // Sort client-side by lastActive descending
+                .sort((a, b) => (b.lastActive || '').localeCompare(a.lastActive || ''));
             setUsers(usersData);
             setLoading(false);
         }, (error) => {
