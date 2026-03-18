@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react';
 import { useAppContext } from '../context/AppContext';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
 import { signOut } from 'firebase/auth';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import { toJpeg } from 'html-to-image';
 import { episodes } from '../data/episodes';
@@ -21,6 +22,8 @@ export default function Profile() {
     const [deleteConfirmInput, setDeleteConfirmInput] = useState('');
     const [deleting, setDeleting] = useState(false);
     const [deleteError, setDeleteError] = useState('');
+    const [usernameError, setUsernameError] = useState('');
+    const [savingName, setSavingName] = useState(false);
 
     const pct = Math.round((watchedEpisodes.length / TOTAL) * 100) || 0;
 
@@ -46,9 +49,40 @@ export default function Profile() {
         }
     };
 
-    const handleSaveName = () => {
-        setDisplayName(nameInput.trim() || user?.email?.split('@')[0]);
-        setEditing(false);
+    const handleSaveName = async () => {
+        const trimmed = nameInput.trim() || user?.email?.split('@')[0];
+        setUsernameError('');
+
+        // If name hasn't actually changed, just close editing
+        if (trimmed === displayName) {
+            setEditing(false);
+            return;
+        }
+
+        setSavingName(true);
+        try {
+            // Check Firestore for another user with the same displayName
+            const usersRef = collection(db, 'users');
+            const q = query(usersRef, where('displayName', '==', trimmed));
+            const snapshot = await getDocs(q);
+
+            const isTakenByOther = snapshot.docs.some(doc => doc.id !== user?.uid);
+            if (isTakenByOther) {
+                setUsernameError(`"${trimmed}" is already taken. Please choose a different name.`);
+                setSavingName(false);
+                return;
+            }
+
+            setDisplayName(trimmed);
+            setEditing(false);
+        } catch (err) {
+            console.error('Username check failed:', err);
+            // Fallback: allow save if Firestore check fails
+            setDisplayName(trimmed);
+            setEditing(false);
+        } finally {
+            setSavingName(false);
+        }
     };
 
     const handleShare = async () => {
@@ -92,23 +126,35 @@ export default function Profile() {
                     {/* Info */}
                     <div className="flex-1 w-full">
                         {editing ? (
-                            <div className="flex flex-wrap items-center gap-3 mb-2">
-                                <div className="relative flex-1 min-w-[200px] max-w-sm">
-                                    <input
-                                        autoFocus
-                                        value={nameInput}
-                                        onChange={e => setNameInput(e.target.value)}
-                                        onKeyDown={e => e.key === 'Enter' && handleSaveName()}
-                                        className="w-full bg-white-5 border border-bb-green-50 text-white rounded-lg px-4 py-2 text-2xl font-black focus:outline-none focus:ring-2 focus:ring-bb-green focus:border-transparent transition-all"
-                                        placeholder="Enter name..."
-                                    />
+                            <div className="flex flex-col gap-2 mb-2">
+                                <div className="flex flex-wrap items-center gap-3">
+                                    <div className="relative flex-1 min-w-[200px] max-w-sm">
+                                        <input
+                                            autoFocus
+                                            value={nameInput}
+                                            onChange={e => { setNameInput(e.target.value); setUsernameError(''); }}
+                                            onKeyDown={e => e.key === 'Enter' && handleSaveName()}
+                                            className={`w-full bg-white-5 border text-white rounded-lg px-4 py-2 text-2xl font-black focus:outline-none focus:ring-2 transition-all ${usernameError ? 'border-red-500 focus:ring-red-500' : 'border-bb-green-50 focus:ring-bb-green focus:border-transparent'}`}
+                                            placeholder="Enter name..."
+                                        />
+                                    </div>
+                                    <button
+                                        onClick={handleSaveName}
+                                        disabled={savingName}
+                                        className="p-2.5 rounded-lg bg-bb-green text-white hover:bg-green-500 transition-colors shadow-lg disabled:opacity-60 disabled:cursor-not-allowed"
+                                    >
+                                        {savingName
+                                            ? <span className="w-5 h-5 border-2 border-white/40 border-t-white rounded-full animate-spin block" />
+                                            : <Check size={20} />
+                                        }
+                                    </button>
+                                    <button onClick={() => { setEditing(false); setUsernameError(''); }} className="p-2.5 rounded-lg bg-white-10 text-white hover:bg-white-20 transition-colors">
+                                        <X size={20} />
+                                    </button>
                                 </div>
-                                <button onClick={handleSaveName} className="p-2.5 rounded-lg bg-bb-green text-white hover:bg-green-500 transition-colors shadow-lg">
-                                    <Check size={20} />
-                                </button>
-                                <button onClick={() => setEditing(false)} className="p-2.5 rounded-lg bg-white-10 text-white hover:bg-white-20 transition-colors">
-                                    <X size={20} />
-                                </button>
+                                {usernameError && (
+                                    <p className="text-red-400 text-sm font-medium mt-1">{usernameError}</p>
+                                )}
                             </div>
                         ) : (
                             <div className="flex flex-wrap items-center gap-4 mb-2">
