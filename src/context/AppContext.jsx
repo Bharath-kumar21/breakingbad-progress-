@@ -9,7 +9,7 @@ export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    const ADMIN_EMAILS = ['bharathkumar2105j@gmail.com']; // Authorized admins
+    const ADMIN_EMAILS = ['bharathkumar2105j@gmail.com', 'thestrwht@gmail.com']; // Authorized admins
     const isAdmin = user && ADMIN_EMAILS.includes(user.email);
 
     const [displayName, setDisplayName] = useState(() =>
