@@ -239,3 +239,19 @@
 .drop-shadow-sm {
     filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.3));
 }
+
+/* Data Table Scrollbar Styling */
+.overflow-x-auto::-webkit-scrollbar {
+    height: 8px;
+}
+.overflow-x-auto::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02);
+    border-radius: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb {
+    background: rgba(36, 153, 71, 0.4); /* bb-green */
+    border-radius: 4px;
+}
+.overflow-x-auto::-webkit-scrollbar-thumb:hover {
+    background: rgba(36, 153, 71, 0.8);
+}
