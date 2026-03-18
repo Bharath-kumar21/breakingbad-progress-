@@ -115,7 +115,18 @@ export default function AuthPage({ isLogin = true }) {
             }
             navigate('/');
         } catch (err) {
-            setError(err.message.replace('Firebase: ', ''));
+            const code = err.code;
+            if (code === 'auth/email-already-in-use') {
+                setError('This email is already registered. Please log in instead.');
+            } else if (code === 'auth/invalid-email') {
+                setError('Invalid email address. Please check and try again.');
+            } else if (code === 'auth/weak-password') {
+                setError('Password is too weak. Use at least 6 characters.');
+            } else if (code === 'auth/user-not-found' || code === 'auth/wrong-password' || code === 'auth/invalid-credential') {
+                setError('Incorrect email or password. Please try again.');
+            } else {
+                setError(err.message.replace('Firebase: ', ''));
+            }
         } finally {
             setLoading(false);
         }
