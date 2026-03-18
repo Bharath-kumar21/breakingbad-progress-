@@ -5,10 +5,10 @@ import Dashboard from './pages/Dashboard';
 import Episodes from './pages/Episodes';
 import Favorites from './pages/Favorites';
 import Characters from './pages/Characters';
-import AuthPage from './pages/AuthPage';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import AdminRoute from './components/AdminRoute';
 
 function App() {
     return (
@@ -37,9 +37,9 @@ function App() {
                                 </ProtectedRoute>
                             } />
                             <Route path="admin" element={
-                                <ProtectedRoute>
+                                <AdminRoute>
                                     <AdminDashboard />
-                                </ProtectedRoute>
+                                </AdminRoute>
                             } />
                         </Route>
                     </Routes>

@@ -4,7 +4,7 @@ import { useAppContext } from '../context/AppContext';
 import '../index.css';
 
 export default function Layout() {
-    const { user } = useAppContext();
+    const { user, isAdmin } = useAppContext();
 
     const baseNavItems = [
         { name: 'Dashboard', path: '/', icon: Home },
@@ -18,7 +18,7 @@ export default function Layout() {
         ...baseNavItems,
         ...(user ? [
             { name: 'Profile', path: '/profile', icon: UserCircle2 },
-            { name: 'Admin', path: '/admin', icon: ShieldAlert }
+            ...(isAdmin ? [{ name: 'Admin', path: '/admin', icon: ShieldAlert }] : [])
         ] : [
             { name: 'Log In', path: '/login', icon: LogIn }
         ])

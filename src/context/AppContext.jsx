@@ -9,6 +9,9 @@ export const AppProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
+    const ADMIN_EMAILS = ['bharathkumar2105j@gmail.com']; // Authorized admins
+    const isAdmin = user && ADMIN_EMAILS.includes(user.email);
+
     const [displayName, setDisplayName] = useState(() =>
         localStorage.getItem('bb_displayName') || ''
     );
@@ -83,7 +86,8 @@ export const AppProvider = ({ children }) => {
     return (
         <AppContext.Provider value={{
             user, userData, displayName, setDisplayName, dob, setDob,
-            watchedEpisodes, toggleWatched, favorites, toggleFavorite, loading
+            watchedEpisodes, toggleWatched, favorites, toggleFavorite, 
+            loading, isAdmin
         }}>
             {!loading && children}
         </AppContext.Provider>
