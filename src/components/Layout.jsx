@@ -1,5 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
-import { Film, Home, Users, Star, UserCircle2, LogIn } from 'lucide-react';
+import { Film, Home, Users, Star, UserCircle2, LogIn, ShieldAlert } from 'lucide-react';
 import { useAppContext } from '../context/AppContext';
 import '../index.css';
 
@@ -13,12 +13,15 @@ export default function Layout() {
         { name: 'Characters', path: '/characters', icon: Users },
     ];
 
-    // Dynamically append Profile or Login
+    // Dynamically append Profile, Admin, or Login
     const navItems = [
         ...baseNavItems,
-        user
-            ? { name: 'Profile', path: '/profile', icon: UserCircle2 }
-            : { name: 'Log In', path: '/login', icon: LogIn }
+        ...(user ? [
+            { name: 'Profile', path: '/profile', icon: UserCircle2 },
+            { name: 'Admin', path: '/admin', icon: ShieldAlert }
+        ] : [
+            { name: 'Log In', path: '/login', icon: LogIn }
+        ])
     ];
 
     return (

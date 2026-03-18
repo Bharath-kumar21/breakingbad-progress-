@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
-import { auth } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 
 const AppContext = createContext();
 
@@ -33,10 +34,35 @@ export const AppProvider = ({ children }) => {
         return () => unsubscribe();
     }, []);
 
+    // Sync to Local Storage
     useEffect(() => { localStorage.setItem('bb_watchedEpisodes', JSON.stringify(watchedEpisodes)); }, [watchedEpisodes]);
     useEffect(() => { localStorage.setItem('bb_favorites', JSON.stringify(favorites)); }, [favorites]);
     useEffect(() => { localStorage.setItem('bb_displayName', displayName); }, [displayName]);
     useEffect(() => { localStorage.setItem('bb_dob', dob); }, [dob]);
+
+    // Sync to Firestore for Admin Tracking
+    useEffect(() => {
+        const syncToFirestore = async () => {
+            if (user && !loading) {
+                try {
+                    const userRef = doc(db, 'users', user.uid);
+                    await setDoc(userRef, {
+                        email: user.email,
+                        displayName: displayName || user.email?.split('@')[0],
+                        dob: dob || '',
+                        watchedCount: watchedEpisodes.length,
+                        favoritesCount: favorites.length,
+                        lastActive: new Date().toISOString()
+                    }, { merge: true });
+                } catch (error) {
+                    console.error("Error syncing user data to Firestore:", error);
+                }
+            }
+        };
+
+        const timeoutId = setTimeout(syncToFirestore, 1000); // Debounce sync
+        return () => clearTimeout(timeoutId);
+    }, [user, displayName, dob, watchedEpisodes, favorites, loading]);
 
     const toggleWatched = (episodeId) => {
         setWatchedEpisodes(prev =>

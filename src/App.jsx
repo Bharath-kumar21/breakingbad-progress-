@@ -7,6 +7,7 @@ import Favorites from './pages/Favorites';
 import Characters from './pages/Characters';
 import AuthPage from './pages/AuthPage';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 
 function App() {
@@ -33,6 +34,11 @@ function App() {
                             <Route path="profile" element={
                                 <ProtectedRoute>
                                     <Profile />
+                                </ProtectedRoute>
+                            } />
+                            <Route path="admin" element={
+                                <ProtectedRoute>
+                                    <AdminDashboard />
                                 </ProtectedRoute>
                             } />
                         </Route>

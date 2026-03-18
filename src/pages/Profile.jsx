@@ -5,37 +5,10 @@ import { signOut } from 'firebase/auth';
 import { useNavigate } from 'react-router-dom';
 import { toJpeg } from 'html-to-image';
 import { episodes } from '../data/episodes';
+import { LogOut, User, Edit2, Share2, Check, X, Award, PlayCircle } from 'lucide-react';
+import ProgressBar from '../components/ProgressBar';
 
-const mono = { fontFamily: "'Courier New', Courier, monospace" };
 const TOTAL = episodes.length;
-
-/* 2008-style beveled button */
-const Btn2k8 = ({ children, onClick, type = 'button', disabled, danger, small }) => (
-    <button
-        type={type} disabled={disabled} onClick={onClick}
-        style={{
-            ...mono,
-            background: danger
-                ? 'linear-gradient(180deg,#ff8080 0%,#dd2222 45%,#aa0000 100%)'
-                : 'linear-gradient(180deg,#c8ff9a 0%,#4ece60 45%,#228833 100%)',
-            border: danger ? '2px solid #770000' : '2px solid #1a6b30',
-            boxShadow: danger
-                ? '0 4px 0 #550000, inset 0 1px 0 rgba(255,210,210,0.5)'
-                : '0 4px 0 #0d4a1a, inset 0 1px 0 rgba(210,255,210,0.6)',
-            color: '#fff',
-            textShadow: '0 1px 2px rgba(0,0,0,0.6)',
-            padding: small ? '8px 18px' : '13px 36px',
-            cursor: disabled ? 'not-allowed' : 'pointer',
-            fontWeight: 900,
-            letterSpacing: small ? '0.12em' : '0.18em',
-            fontSize: small ? '0.68rem' : '0.78rem',
-            textTransform: 'uppercase',
-            opacity: disabled ? 0.6 : 1,
-            borderRadius: '4px',
-            minWidth: small ? 'unset' : '140px',
-        }}
-    >{children}</button>
-);
 
 export default function Profile() {
     const { user, userData, displayName, setDisplayName, dob, watchedEpisodes, favorites } = useAppContext();
@@ -64,7 +37,7 @@ export default function Profile() {
             await new Promise(r => setTimeout(r, 150));
             const dataUrl = await toJpeg(progressRef.current, {
                 quality: 0.96,
-                backgroundColor: '#040f09',
+                backgroundColor: '#0a0a0a',
             });
             const blob = await (await fetch(dataUrl)).blob();
             const file = new File([blob], 'bb-progress.jpg', { type: 'image/jpeg' });
@@ -76,262 +49,210 @@ export default function Profile() {
                 link.download = 'bb-progress.jpg';
                 link.href = dataUrl;
                 link.click();
-                alert('Downloaded! Share it to your Instagram Story.');
             }
         } catch (err) { alert("Couldn't generate image."); }
         finally { setSharing(false); }
     };
 
-    /* ─── filled bar segments ─── */
-    const SEG = 20;
-    const filled = Math.round((pct / 100) * SEG);
-
     return (
-        <div style={{ maxWidth: 700, margin: '0 auto', padding: 8, ...mono }}>
-
+        <div className="max-w-4xl mx-auto space-y-8 fade-in">
+            
             {/* ── Top window ── */}
-            <div style={{
-                background: 'linear-gradient(145deg,#3a3a3a,#1a1a1a)',
-                border: '4px solid #555',
-                borderRadius: 10,
-                boxShadow: '0 0 0 2px #222, 6px 6px 20px rgba(0,0,0,0.7), 0 0 30px rgba(16,185,129,0.12)',
-                marginBottom: 20,
-                overflow: 'hidden'
-            }}>
-                {/* title bar */}
-                <div style={{
-                    background: 'linear-gradient(180deg,#2a6e3a,#1a4a28)',
-                    padding: '6px 12px',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    borderBottom: '2px solid #0a3a12',
-                }}>
-                    <span style={{ color: '#a8ffc0', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '0.1em' }}>
-                        🖥  BB_PROFILE.EXE — OPERATIVE DOSSIER
-                    </span>
-                    <div style={{ display: 'flex', gap: 6 }}>
-                        {['#ffb300', '#00b300', '#cc0000'].map((c, i) => (
-                            <div key={i} style={{ width: 12, height: 12, borderRadius: '50%', background: c, border: '1px solid rgba(0,0,0,0.4)' }} />
-                        ))}
+            <div className="glass rounded-3xl p-8 border-white-5 shadow-2xl relative overflow-hidden group">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-bb-green-20 rounded-full blur-3xl -mr-20 -mt-20 pointer-events-none transition-transform duration-700 group-hover:scale-110"></div>
+                
+                <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center gap-8">
+                    {/* Avatar */}
+                    <div className="w-32 h-32 rounded-full glass border-2 border-bb-green-30 flex items-center justify-center shadow-lg relative shrink-0">
+                        <User className="w-16 h-16 text-bb-green" />
+                        <div className="absolute inset-0 rounded-full shadow-[inset_0_0_20px_rgba(16,185,129,0.2)]"></div>
                     </div>
-                </div>
 
-                {/* CRT content */}
-                <div style={{
-                    background: '#040f09',
-                    backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px)',
-                    padding: '20px 20px 16px'
-                }}>
-                    {/* Name row */}
-                    <div style={{ marginBottom: 16 }}>
-                        <p style={{ color: '#2e6e44', fontSize: '0.6rem', letterSpacing: '0.1em', marginBottom: 4 }}>
-                            C:\&gt; OPERATIVE IDENTIFICATION_
-                        </p>
+                    {/* Info */}
+                    <div className="flex-1 w-full">
                         {editing ? (
-                            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                                <div style={{
-                                    display: 'flex', border: '2px inset #1a5c2a', background: '#071510',
-                                    boxShadow: 'inset 2px 2px 4px rgba(0,0,0,0.8)'
-                                }}>
-                                    <span style={{ background: 'linear-gradient(180deg,#2a6e3a,#1a4a28)', color: '#a8ffb8', padding: '6px 10px', fontSize: '0.7rem', fontWeight: 900, borderRight: '2px solid #1a5c2a' }}>{'>'}</span>
+                            <div className="flex flex-wrap items-center gap-3 mb-2">
+                                <div className="relative flex-1 min-w-[200px] max-w-sm">
                                     <input
                                         autoFocus
                                         value={nameInput}
                                         onChange={e => setNameInput(e.target.value)}
                                         onKeyDown={e => e.key === 'Enter' && handleSaveName()}
-                                        style={{ ...mono, background: 'transparent', border: 'none', outline: 'none', color: '#6be585', fontSize: '1rem', padding: '6px 8px', fontWeight: 900 }}
+                                        className="w-full bg-white-5 border border-bb-green-50 text-white rounded-lg px-4 py-2 text-2xl font-black focus:outline-none focus:ring-2 focus:ring-bb-green focus:border-transparent transition-all"
+                                        placeholder="Enter name..."
                                     />
                                 </div>
-                                <Btn2k8 small onClick={handleSaveName}>SAVE</Btn2k8>
-                                <Btn2k8 small onClick={() => setEditing(false)}>CANCEL</Btn2k8>
+                                <button onClick={handleSaveName} className="p-2.5 rounded-lg bg-bb-green text-white hover:bg-green-500 transition-colors shadow-lg">
+                                    <Check size={20} />
+                                </button>
+                                <button onClick={() => setEditing(false)} className="p-2.5 rounded-lg bg-white-10 text-white hover:bg-white-20 transition-colors">
+                                    <X size={20} />
+                                </button>
                             </div>
                         ) : (
-                            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                                <span style={{ color: '#6be585', fontSize: '1.6rem', fontWeight: 900, letterSpacing: '0.05em', textShadow: '0 0 10px rgba(107,229,133,0.6)' }}>
-                                    {userData?.username || 'OPERATIVE'}
-                                </span>
-                                <Btn2k8 small onClick={() => { setNameInput(displayName); setEditing(true); }}>✎ EDIT NAME</Btn2k8>
+                            <div className="flex flex-wrap items-center gap-4 mb-2">
+                                <h1 className="text-4xl md:text-5xl font-black text-white tracking-tight drop-shadow-md">
+                                    {userData?.username || 'Operative'}
+                                </h1>
+                                <button 
+                                    onClick={() => { setNameInput(displayName); setEditing(true); }}
+                                    className="p-2 rounded-full text-white-dim hover:bg-white-10 hover:text-white transition-all"
+                                    title="Edit Name"
+                                >
+                                    <Edit2 size={18} />
+                                </button>
                             </div>
                         )}
-                        {dob && <p style={{ color: '#2e6e44', fontSize: '0.6rem', marginTop: 4 }}>DOB: {dob}</p>}
-                        <p style={{ color: '#1a5c2a', fontSize: '0.6rem', marginTop: 2 }}>EMAIL: {user?.email}</p>
-                    </div>
-
-                    {/* Stats row */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
-                        {[
-                            { label: 'EPISODES LOGGED', val: watchedEpisodes.length, color: '#6be585' },
-                            { label: 'FAVORITES SAVED', val: favorites.length, color: '#ffd700' },
-                        ].map(s => (
-                            <div key={s.label} style={{
-                                border: `2px solid ${s.color}33`,
-                                background: `${s.color}08`,
-                                padding: '12px',
-                                boxShadow: `inset 2px 2px 4px rgba(0,0,0,0.5), 0 0 8px ${s.color}22`
-                            }}>
-                                <p style={{ color: s.color, fontSize: '2rem', fontWeight: 900, textShadow: `0 0 10px ${s.color}` }}>{s.val}</p>
-                                <p style={{ color: `${s.color}88`, fontSize: '0.6rem', letterSpacing: '0.1em', marginTop: 2 }}>{s.label}</p>
+                        
+                        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4">
+                            <div className="flex flex-col">
+                                <span className="text-white-dim text-xs uppercase tracking-wider font-bold">Email</span>
+                                <span className="text-white-med text-sm font-medium">{user?.email}</span>
                             </div>
-                        ))}
+                            {dob && (
+                                <div className="flex flex-col">
+                                    <span className="text-white-dim text-xs uppercase tracking-wider font-bold">Born</span>
+                                    <span className="text-white-med text-sm font-medium">{dob}</span>
+                                </div>
+                            )}
+                        </div>
                     </div>
 
                     {/* Sign out */}
-                    <Btn2k8 danger onClick={handleLogout}>⏻ SIGN OUT</Btn2k8>
-                </div>
-            </div>
-
-            {/* ── Shareable Card ── */}
-            <div style={{
-                background: 'linear-gradient(145deg,#3a3a3a,#1a1a1a)',
-                border: '4px solid #555',
-                borderRadius: 10,
-                boxShadow: '0 0 0 2px #222, 6px 6px 20px rgba(0,0,0,0.7)',
-                overflow: 'hidden',
-                marginBottom: 16
-            }}>
-                <div style={{
-                    background: 'linear-gradient(180deg,#4a3f18,#2a2510)',
-                    padding: '6px 12px',
-                    borderBottom: '2px solid #2a1f08',
-                    display: 'flex', justifyContent: 'space-between', alignItems: 'center'
-                }}>
-                    <span style={{ color: '#ffd700', fontSize: '0.7rem', fontWeight: 900, letterSpacing: '0.1em' }}>
-                        📸  BB_SHARE.EXE — INSTAGRAM STORY CARD
-                    </span>
-                </div>
-
-                {/* The actual card that gets screenshotted */}
-                <div ref={progressRef} style={{
-                    background: '#040f09',
-                    backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.1) 2px,rgba(0,0,0,0.1) 4px)',
-                    padding: '20px',
-                    ...mono,
-                    // Retro double-border effect
-                    border: '4px solid #1a5c2a',
-                    outline: '2px solid #0a2010',
-                    outlineOffset: '4px',
-                    boxShadow: '0 0 0 8px #040f09, 0 0 0 10px #1a5c2a, 0 0 20px rgba(107,229,133,0.2)',
-                }}>
-                    {/* Retro corner marks */}
-                    {[
-                        { top: 6, left: 6 }, { top: 6, right: 6 }, { bottom: 6, left: 6 }, { bottom: 6, right: 6 }
-                    ].map((pos, i) => (
-                        <div key={i} style={{
-                            position: 'absolute', width: 12, height: 12,
-                            borderTop: (pos.top !== undefined) ? '2px solid #6be585' : 'none',
-                            borderBottom: (pos.bottom !== undefined) ? '2px solid #6be585' : 'none',
-                            borderLeft: (pos.left !== undefined) ? '2px solid #6be585' : 'none',
-                            borderRight: (pos.right !== undefined) ? '2px solid #6be585' : 'none',
-                            ...pos
-                        }} />
-                    ))}
-
-                    {/* Header row: Logo + Timestamp */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
-                        {/* Logo */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                            <div style={{ display: 'flex', gap: 3 }}>
-                                <span style={{
-                                    background: 'linear-gradient(180deg,#a8ff78,#1e7a2f)',
-                                    color: '#000', padding: '2px 5px',
-                                    fontSize: '0.7rem', fontWeight: 900,
-                                    border: '1px solid #155726',
-                                    boxShadow: '1px 1px 0 #0a3a12'
-                                }}>Br</span>
-                                <span style={{
-                                    background: 'linear-gradient(180deg,#a8ff78,#1e7a2f)',
-                                    color: '#000', padding: '2px 5px',
-                                    fontSize: '0.7rem', fontWeight: 900,
-                                    border: '1px solid #155726',
-                                    boxShadow: '1px 1px 0 #0a3a12'
-                                }}>Ba</span>
-                            </div>
-                            <span style={{ color: '#6be585', fontSize: '0.5rem', letterSpacing: '0.15em', textShadow: '0 0 6px rgba(107,229,133,0.7)' }}>TRACKER</span>
-                        </div>
-
-                        {/* Timestamp */}
-                        <div style={{ textAlign: 'right' }}>
-                            <p style={{ color: '#6be585', fontSize: '0.65rem', fontWeight: 900, textShadow: '0 0 6px rgba(107,229,133,0.5)', letterSpacing: '0.05em' }}>
-                                {new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                            </p>
-                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.1em' }}>
-                                {new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }).toUpperCase()}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Divider */}
-                    <div style={{ borderTop: '1px solid #0a3a12', borderBottom: '1px solid #0a3a12', padding: '2px 0', marginBottom: 12 }}>
-                        <p style={{ color: '#1a5c2a', fontSize: '0.5rem', letterSpacing: '0.2em', textAlign: 'center' }}>
-                            ─── OPERATIVE PROGRESS REPORT ───
-                        </p>
-                    </div>
-
-                    {/* Name + Percentage */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 14 }}>
-                        <div>
-                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.15em', marginBottom: 4 }}>SUBJECT:</p>
-                            <p style={{ color: '#6be585', fontSize: '1.4rem', fontWeight: 900, textShadow: '0 0 12px rgba(107,229,133,0.6)', letterSpacing: '0.05em' }}>
-                                {userData?.username?.toUpperCase() || 'OPERATIVE'}
-                            </p>
-                        </div>
-                        <div style={{ textAlign: 'right' }}>
-                            <p style={{ color: '#6be585', fontSize: '2rem', fontWeight: 900, textShadow: '0 0 15px rgba(107,229,133,0.8)', lineHeight: 1 }}>{pct}%</p>
-                            <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.1em' }}>COMPLETE</p>
-                        </div>
-                    </div>
-
-                    {/* Retro segment bar */}
-                    <p style={{ color: '#2e6e44', fontSize: '0.5rem', letterSpacing: '0.15em', marginBottom: 6 }}>C:\&gt; SERIES PROGRESS_</p>
-                    <div style={{ display: 'flex', gap: 3, marginBottom: 12 }}>
-                        {Array.from({ length: SEG }).map((_, i) => (
-                            <div key={i} style={{
-                                flex: 1, height: 20,
-                                background: i < filled
-                                    ? 'linear-gradient(180deg,#a8ff78 0%,#3dba4e 50%,#1e7a2f 100%)'
-                                    : '#071510',
-                                border: i < filled ? '1px solid #155726' : '1px solid #0a2010',
-                                boxShadow: i < filled ? '0 0 4px rgba(107,229,133,0.5)' : 'none',
-                            }} />
-                        ))}
-                    </div>
-
-                    {/* Stats row */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1a5c2a', paddingTop: 8 }}>
-                        <span style={{ color: '#6be585', fontSize: '0.55rem' }}>EPS: <span style={{ color: '#a8ffc0', fontWeight: 900 }}>{watchedEpisodes.length}</span>/{TOTAL}</span>
-                        <span style={{ color: '#6be585', fontSize: '0.55rem' }}>FAV: <span style={{ color: '#ffd700', fontWeight: 900 }}>{favorites.length}</span></span>
-                        {dob && <span style={{ color: '#2e6e44', fontSize: '0.55rem' }}>DOB: {dob}</span>}
-                        <span style={{ color: '#1a5c2a', fontSize: '0.55rem' }}>v1.0</span>
-                    </div>
-                </div>
-
-                {/* Share button area */}
-                <div style={{ background: '#111', borderTop: '2px solid #222', padding: '14px 20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                    <p style={{ ...mono, color: '#333', fontSize: '0.6rem' }}>
-                        {sharing ? 'C:\\&gt; GENERATING..._' : 'C:\\&gt; READY TO EXPORT_'}
-                    </p>
-                    <button
-                        onClick={handleShare}
-                        disabled={sharing}
-                        style={{
-                            background: 'linear-gradient(180deg,#d080f0 0%,#9b46cc 45%,#6a1fa0 100%)',
-                            border: '2px solid #450880',
-                            boxShadow: '0 4px 0 #220055, inset 0 1px 0 rgba(230,190,255,0.5)',
-                            color: '#fff', textShadow: '0 1px 2px rgba(0,0,0,0.6)',
-                            padding: '13px 36px', ...mono,
-                            fontWeight: 900, fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.18em',
-                            cursor: sharing ? 'not-allowed' : 'pointer', opacity: sharing ? 0.7 : 1,
-                            display: 'flex', alignItems: 'center', gap: 10, borderRadius: '4px',
-                            minWidth: '220px', justifyContent: 'center'
-                        }}
+                    <button 
+                        onClick={handleLogout}
+                        className="mt-4 md:mt-0 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 text-red-400 font-bold hover:bg-red-500 hover:text-white transition-all duration-300 border border-red-500/20 shadow-sm"
                     >
-                        📤 {sharing ? 'PROCESSING...' : 'SHARE TO INSTAGRAM'}
+                        <LogOut size={18} />
+                        Sign Out
                     </button>
                 </div>
             </div>
 
-            <p style={{ ...mono, color: '#1a5c2a', fontSize: '0.6rem', textAlign: 'center' }}>
-                [i] On mobile: share menu opens. On desktop: image is downloaded for manual upload.
-            </p>
+            {/* Stats row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="glass rounded-3xl p-6 border-white-5 flex items-center justify-between transition-all hover:bg-white-5 hover:border-white-10 cursor-pointer shadow-lg hover:-translate-y-1">
+                    <div>
+                        <p className="text-white-dim text-sm font-bold uppercase tracking-wider mb-1">Episodes Logged</p>
+                        <p className="text-4xl font-black text-white drop-shadow-md">{watchedEpisodes.length}</p>
+                    </div>
+                    <div className="w-16 h-16 rounded-2xl bg-bb-green-20 flex items-center justify-center text-bb-green shadow-inner">
+                        <PlayCircle size={32} />
+                    </div>
+                </div>
+                <div className="glass rounded-3xl p-6 border-white-5 flex items-center justify-between transition-all hover:bg-white-5 hover:border-white-10 cursor-pointer shadow-lg hover:-translate-y-1">
+                    <div>
+                        <p className="text-white-dim text-sm font-bold uppercase tracking-wider mb-1">Favorites Saved</p>
+                        <p className="text-4xl font-black text-bb-yellow drop-shadow-md">{favorites.length}</p>
+                    </div>
+                    <div className="w-16 h-16 rounded-2xl bg-bb-yellow-10 flex items-center justify-center text-bb-yellow shadow-inner">
+                        <Award size={32} />
+                    </div>
+                </div>
+            </div>
+
+            <div className="h-4"></div>
+
+            {/* ── Shareable Card Area ── */}
+            <div className="flex items-center justify-between px-2">
+                <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                    <Share2 className="text-bb-green w-5 h-5" />
+                    Share Your Progress
+                </h3>
+            </div>
+            
+            <div className="glass rounded-3xl p-6 md:p-10 border-white-5 shadow-2xl relative overflow-hidden flex flex-col items-center">
+                
+                {/* The actual card that gets screenshotted */}
+                <div 
+                    ref={progressRef} 
+                    className="w-full max-w-lg bg-[#0a0a0a] rounded-2xl p-8 relative overflow-hidden shadow-2xl"
+                    style={{
+                        border: '1px solid rgba(255,255,255,0.08)',
+                        backgroundImage: 'radial-gradient(circle at 100% 0%, rgba(16,185,129,0.15) 0%, transparent 50%), radial-gradient(circle at 0% 100%, rgba(16,185,129,0.05) 0%, transparent 50%)'
+                    }}
+                >
+                    {/* Header: Logo + Date */}
+                    <div className="flex justify-between items-start mb-10">
+                        <div className="flex items-center gap-1.5 cursor-pointer">
+                            <div className="flex items-center gap-1 font-black text-xl tracking-tighter">
+                                <span className="bg-[#0f6b32] text-white px-2 py-1 rounded shadow-sm border border-[#168a42]">Br</span>
+                                <span className="bg-[#0f6b32] text-white px-2 py-1 rounded shadow-sm border border-[#168a42]">Ba</span>
+                            </div>
+                            <span className="text-white/60 font-bold ml-1 text-sm tracking-widest uppercase">Tracker</span>
+                        </div>
+                        
+                        <div className="text-right">
+                            <p className="text-white/80 font-bold text-sm tracking-wide">
+                                {new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </p>
+                        </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="flex flex-col gap-6">
+                        <div>
+                            <p className="text-white/50 text-xs font-bold uppercase tracking-widest mb-2">Operative Profile</p>
+                            <h2 className="text-3xl font-black text-white tracking-tight drop-shadow-sm">
+                                {userData?.username || 'Operative'}
+                            </h2>
+                        </div>
+
+                        <div className="glass p-6 rounded-2xl border-white-5 bg-white/[0.02]">
+                            <div className="flex justify-between items-end mb-4">
+                                <p className="text-white/70 font-semibold tracking-wide">Series Completed</p>
+                                <div className="text-right">
+                                    <span className="text-4xl font-black text-bb-green drop-shadow-[0_0_15px_rgba(16,185,129,0.4)]">{pct}%</span>
+                                </div>
+                            </div>
+                            
+                            <ProgressBar current={watchedEpisodes.length} total={TOTAL} />
+                            
+                            <div className="flex justify-between mt-5 pt-5 border-t border-white/5">
+                                <div className="text-center">
+                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Episodes</p>
+                                    <p className="text-white font-bold text-lg">{watchedEpisodes.length}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Total</p>
+                                    <p className="text-white font-bold text-lg">{TOTAL}</p>
+                                </div>
+                                <div className="text-center">
+                                    <p className="text-white/40 text-[10px] font-bold uppercase tracking-widest mb-1">Favorites</p>
+                                    <p className="text-bb-yellow font-bold text-lg">{favorites.length}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Share button */}
+                <button
+                    onClick={handleShare}
+                    disabled={sharing}
+                    className="mt-8 relative group overflow-hidden rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-8 py-4 text-white font-bold text-lg tracking-wide shadow-[0_0_20px_rgba(147,51,234,0.3)] transition-all hover:scale-105 hover:shadow-[0_0_30px_rgba(147,51,234,0.5)] disabled:opacity-70 disabled:cursor-not-allowed disabled:hover:scale-100 flex items-center gap-3"
+                >
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out"></div>
+                    <span className="relative z-10 flex items-center gap-2">
+                        {sharing ? (
+                            <>
+                                <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+                                Generating...
+                            </>
+                        ) : (
+                            <>
+                                <Share2 className="w-5 h-5" />
+                                Share Story
+                            </>
+                        )}
+                    </span>
+                </button>
+                <p className="text-white-dim text-xs mt-4 text-center max-w-md">
+                    Click to generate a sleek card. On mobile, it opens the share menu. On desktop, it downloads the image for you to upload.
+                </p>
+            </div>
+            
+            <div className="h-8"></div>
         </div>
     );
 }
