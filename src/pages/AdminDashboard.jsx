@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Users, Activity, PlayCircle, Star, Search, ShieldAlert, Download, MonitorPlay } from 'lucide-react';
 
@@ -9,26 +9,24 @@ export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState('');
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                // Fetch all users ordered by last active date
-                const usersRef = collection(db, 'users');
-                const q = query(usersRef, orderBy('lastActive', 'desc'));
-                const snapshot = await getDocs(q);
+        const usersRef = collection(db, 'users');
+        const q = query(usersRef, orderBy('lastActive', 'desc'));
 
-                const usersData = snapshot.docs.map(doc => ({
-                    id: doc.id,
-                    ...doc.data()
-                }));
-                setUsers(usersData);
-            } catch (error) {
-                console.error("Error fetching users:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
+        // Real-time listener — auto-updates whenever user data changes
+        const unsubscribe = onSnapshot(q, (snapshot) => {
+            const usersData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
+            setUsers(usersData);
+            setLoading(false);
+        }, (error) => {
+            console.error("Error listening to users:", error);
+            setLoading(false);
+        });
 
-        fetchUsers();
+        // Cleanup listener on unmount
+        return () => unsubscribe();
     }, []);
 
     const filteredUsers = users.filter(user => 
